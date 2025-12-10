@@ -8,9 +8,8 @@ app.use(express.json());
 
 const DATA_FILE = "pedos.json";
 
-// Crear archivo inicial si no existe
 if (!fs.existsSync(DATA_FILE)) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify({ contador: 0 }));
+  fs.writeFileSync(DATA_FILE, JSON.stringify({ contador: 7 }));
 }
 
 function loadData() {
@@ -21,21 +20,20 @@ function saveData(data) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data));
 }
 
-// ✅ Obtener contador global
+// ✅ CONTADOR
 app.get("/api/contador", (req, res) => {
   const data = loadData();
   res.json({ contador: data.contador });
 });
 
-// ✅ Registrar un pedo (SIN EMAIL)
+// ✅ SUMAR SIN EMAIL
 app.post("/api/pedo", (req, res) => {
   const data = loadData();
   data.contador += 1;
   saveData(data);
-
   res.json({ ok: true, contador: data.contador });
 });
 
-// ✅ Puerto compatible con Render
+// ✅ PUERTO RENDER
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log("Servidor Pedo activo en puerto", PORT));
