@@ -10,7 +10,7 @@ const DATA_FILE = "pedos.json";
 
 // Crear archivo inicial si no existe
 if (!fs.existsSync(DATA_FILE)) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify({ contador: 0, emails: [] }));
+  fs.writeFileSync(DATA_FILE, JSON.stringify({ contador: 0 }));
 }
 
 function loadData() {
@@ -21,38 +21,21 @@ function saveData(data) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data));
 }
 
-// Validar email real
-function emailValido(email) {
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return re.test(email.toLowerCase());
-}
-
-// Obtener contador global
+// ✅ Obtener contador global
 app.get("/api/contador", (req, res) => {
   const data = loadData();
   res.json({ contador: data.contador });
 });
 
-// Registrar un email
+// ✅ Registrar un pedo (SIN EMAIL)
 app.post("/api/pedo", (req, res) => {
-  const email = req.body.email;
-
-  if (!emailValido(email)) {
-    return res.status(400).json({ error: "Email no válido" });
-  }
-
   const data = loadData();
-
-  if (data.emails.includes(email)) {
-    return res.status(400).json({ error: "Ese email ya participó" });
-  }
-
-  data.emails.push(email);
   data.contador += 1;
-
   saveData(data);
 
   res.json({ ok: true, contador: data.contador });
 });
 
-app.listen(3000, () => console.log("Servidor Pedo activo en puerto 3000"));
+// ✅ Puerto compatible con Render
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log("Servidor Pedo activo en puerto", PORT));
